@@ -1,12 +1,12 @@
 def tailor_coverletter(client: str, job_description: str, cover_letter_text: str) -> str:
+
     message = client.messages.create(
         model="claude-haiku-4-5",
         max_tokens=4095,
         messages=[
             {
                 "role": "user",
-                "content":f"""You are an expert cover letter consultant. Tailor the provided cover letter to the specific job description.
-
+                "content":f"""You are an expert cover letter consultant helping tailor a cover letter to a specific job description.
 Your task:
 1. Keep all facts, experiences, and personal details EXACTLY as they are - do not invent anything
 2. Rephrase and reorder content to mirror the language and priorities of the job description

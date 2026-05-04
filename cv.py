@@ -1,4 +1,5 @@
-def tailor_cv(client: str,job_description: str, cv_text: str) -> str:
+def tailor_cv(client: str, job_description: str, cv_text: str) -> str:
+
     message = client.messages.create(
         model="claude-haiku-4-5",
         max_tokens=4095,
@@ -32,3 +33,4 @@ Return the full rewritten LaTeX CV. Only change wording, ordering, and emphasis 
         ]
     )
     return message.content[0].text
+
