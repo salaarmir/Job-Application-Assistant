@@ -6,6 +6,7 @@ from utils.coverletter import tailor_coverletter
 from fastapi import FastAPI
 from fastapi import Form
 from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 import zipfile
 import subprocess
 
@@ -15,6 +16,7 @@ load_dotenv()
 client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
 
 app = FastAPI()
+app.mount("/ui", StaticFiles(directory="ui"), name="ui")
 
 @app.get("/")
 def home():
