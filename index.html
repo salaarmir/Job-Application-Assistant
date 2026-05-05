@@ -6,10 +6,10 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      max-width: 800px;
+      max-width: 1600px;
       margin: 40px auto;
       padding: 20px;
-      background: #f5f5f5;
+      background: #babbbd;
     }
 
     .container {
@@ -17,6 +17,9 @@
       padding: 25px;
       border-radius: 12px;
       box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      display: flex;
+      margin-top: 18px;
+      margin-right: 10px;
     }
 
     h1 {
@@ -31,7 +34,17 @@
 
     input, textarea {
       width: 100%;
-      margin-top: 8px;
+      margin-top: 20px;
+      padding: 12px;
+      font-size: 15px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-sizing: border-box;
+    }
+
+    input, iframe {
+      width: 100%;
+      margin-top: 20px;
       padding: 12px;
       font-size: 15px;
       border: 1px solid #ccc;
@@ -63,11 +76,15 @@
       margin-top: 16px;
       font-weight: bold;
     }
+
+    #outputLatexCV, #outputLatexCoverLetter {
+      height: 800px;
+      resize: none;
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Tailor CV & Cover Letter</h1>
+    <h1>Personalised Job Application Assistant</h1>
 
     <label for="companyName">Company Name</label>
     <input id="companyName" type="text" placeholder="e.g. FDM" />
@@ -77,24 +94,26 @@
 
     <button onclick="createDocuments()">Generate Documents</button>
 
-    <label for="outputLatexCV"></label>Latex CV</label>
-    <textarea id="outputLatexCV" placeholder="Generated Latex CV will appear here..."></textarea>
+    <label for="outputLatexCV">Latex CV</label>
+    <div class="container">
+      <textarea id="outputLatexCV" placeholder="Generated Latex CV will appear here..." width="500" height="800"></textarea>
+      <iframe id="pdfPreviewCV" width="500" height="800">Preview of CV</iframe>
+    </div>
+
 
     <button onclick="convertToPDF('cv')">Preview PDF</button>
     <button onclick="downloadPDF('cv')">Download PDF</button>
 
-    <iframe id="pdfPreviewCV"></iframe>
-
-    <label for="outputLatexCoverLetter"></label> Latex Cover Letter</label>
-    <textarea id="outputLatexCoverLetter" placeholder="Generated Latex Cover Letter will appear here..."></textarea>
+    <label for="outputLatexCoverLetter">Latex Cover Letter</label>
+    <div class="container">
+      <textarea id="outputLatexCoverLetter" placeholder="Generated Latex Cover Letter will appear here..." width="500" height="800"></textarea>
+      <iframe id="pdfPreviewCoverLetter" width="500" height="800">Preview of Cover Letter</iframe>
+    </div>
 
     <button onclick="convertToPDF('cover_letter')">Preview PDF</button>
     <button onclick="downloadPDF('cover_letter')">Download PDF</button>
-  
-    <iframe id="pdfPreviewCoverLetter"></iframe>
 
     <p id="status"></p>
-  </div>
 
   <script>
 
@@ -127,27 +146,6 @@
       document.getElementById("outputLatexCoverLetter").value = data.latex_cover_letter;
 
       status.textContent = "Documents generated successfully!";
-
-      /*return {
-        "latex_cv": data.latex_cv,
-        "latex_cover_letter": data.latex_cover_letter
-      };*/
-
-      /*
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `Salaar_Mir_${companyName}.zip`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-
-      window.URL.revokeObjectURL(url);
-
-      status.textContent = "Done. Zip downloaded.";
-      */
     }
 
     async function convertToPDF(filetype) {
@@ -190,15 +188,7 @@
         document.getElementById("pdfPreviewCoverLetter").src = url;
       }
 
-
-      /*
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = filetype === "cv" ? `Salaar_Mir_CV_${companyName}.pdf` : `Salaar_Mir_CoverLetter_${companyName}.pdf`;
-      a.click();
-      URL.revokeObjectURL(url);
-      status.textContent = "PDF downloaded!";
-      */
+      status.textContent = "PDF generated successfully!";
     
     }
 
@@ -210,7 +200,10 @@
       a.download = filetype === "cv" ? `Salaar_Mir_CV_${companyName}.pdf` : `Salaar_Mir_CoverLetter_${companyName}.pdf`;
       a.click();
       URL.revokeObjectURL(url);
+
+      status.textContent = "PDF downloaded!";
     }
+
   </script>
 </body>
 </html>
