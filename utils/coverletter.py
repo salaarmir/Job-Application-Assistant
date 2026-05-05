@@ -1,3 +1,5 @@
+from utils.helpers import clean_latex
+
 def tailor_coverletter(client: str, job_description: str, cover_letter_text: str) -> str:
 
     message = client.messages.create(
@@ -25,4 +27,4 @@ Return ONLY raw LaTeX, no markdown, no backticks, no explanation."""
             }
         ]
     )
-    return message.content[0].text
+    return clean_latex(message.content[0].text)

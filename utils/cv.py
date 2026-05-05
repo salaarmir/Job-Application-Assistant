@@ -1,3 +1,5 @@
+from utils.helpers import clean_latex
+
 def tailor_cv(client: str, job_description: str, cv_text: str) -> str:
 
     message = client.messages.create(
@@ -20,7 +22,7 @@ Your task:
 9. Profile summary: 3 lines maximum
 
 IMPORTANT: Be ruthlessly concise. Every bullet point must be a single line.
-Return ONLY raw LaTeX, no markdown, no backticks, no explanation.
+Return ONLY raw LaTeX, no markdown, no backticks, no explanation. 
 
 Job Description:
 {job_description}
@@ -32,5 +34,5 @@ Return the full rewritten LaTeX CV. Only change wording, ordering, and emphasis 
             }
         ]
     )
-    return message.content[0].text
+    return clean_latex(message.content[0].text)
 

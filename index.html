@@ -77,6 +77,16 @@
 
     <button onclick="createDocuments()">Generate Documents</button>
 
+    <label for="outputLatexCV"></label>Latex CV</label>
+    <textarea id="outputLatexCV" placeholder="Generated Latex CV will appear here..."></textarea>
+
+    <button onclick="convertToPDF('cv')">Convert CV to PDF</button>
+
+    <label for="outputLatexCoverLetter"></label> Latex Cover Letter</label>
+    <textarea id="outputLatexCoverLetter" placeholder="Generated Latex Cover Letter will appear here..."></textarea>
+
+    <button onclick="convertToPDF('cover_letter')">Convert Cover Letter to PDF</button>
+
     <p id="status"></p>
   </div>
 
@@ -102,6 +112,18 @@
         return;
       }
 
+      const data = await response.json();
+      document.getElementById("outputLatexCV").value = data.latex_cv;
+      document.getElementById("outputLatexCoverLetter").value = data.latex_cover_letter;
+
+      status.textContent = "Documents generated successfully!";
+
+      /*return {
+        "latex_cv": data.latex_cv,
+        "latex_cover_letter": data.latex_cover_letter
+      };*/
+
+      /*
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
 
@@ -115,6 +137,47 @@
       window.URL.revokeObjectURL(url);
 
       status.textContent = "Done. Zip downloaded.";
+      */
+    }
+
+    async function convertToPDF(filetype) {
+      const companyName = document.getElementById("companyName").value;
+      const latexCV = document.getElementById("outputLatexCV").value;
+      const latexCoverLetter = document.getElementById("outputLatexCoverLetter").value
+      const status = document.getElementById("status");
+      
+      status.textContent = "Converting to PDF...";
+
+      const formData = new FormData();
+      formData.append("company_name", companyName);
+      formData.append("filetype", filetype);
+      
+      if (filetype === "cv"){
+        formData.append("latex_content", latexCV);
+      } else {
+        formData.append("latex_content", latexCoverLetter);
+      }
+
+      const response = await fetch("http://127.0.0.1:8000/convert_to_pdf", {
+        method: "POST",
+        body: formData
+      });
+
+      if (!response.ok) {
+        status.textContent = "Something went wrong.";
+        return;
+      }
+
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filetype === "cv" ? `Salaar_Mir_CV_${companyName}.pdf` : `Salaar_Mir_CoverLetter_${companyName}.pdf`;
+      a.click();
+      URL.revokeObjectURL(url);
+      status.textContent = "PDF downloaded!";
+    
     }
   </script>
 </body>
