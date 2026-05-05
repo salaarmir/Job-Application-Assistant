@@ -80,17 +80,27 @@
     <label for="outputLatexCV"></label>Latex CV</label>
     <textarea id="outputLatexCV" placeholder="Generated Latex CV will appear here..."></textarea>
 
-    <button onclick="convertToPDF('cv')">Convert CV to PDF</button>
+    <button onclick="convertToPDF('cv')">Preview PDF</button>
+    <button onclick="downloadPDF('cv')">Download PDF</button>
+
+    <iframe id="pdfPreviewCV"></iframe>
 
     <label for="outputLatexCoverLetter"></label> Latex Cover Letter</label>
     <textarea id="outputLatexCoverLetter" placeholder="Generated Latex Cover Letter will appear here..."></textarea>
 
-    <button onclick="convertToPDF('cover_letter')">Convert Cover Letter to PDF</button>
+    <button onclick="convertToPDF('cover_letter')">Preview PDF</button>
+    <button onclick="downloadPDF('cover_letter')">Download PDF</button>
+  
+    <iframe id="pdfPreviewCoverLetter"></iframe>
 
     <p id="status"></p>
   </div>
 
   <script>
+
+    let cvPdfUrl = null;
+    let coverLetterPdfUrl = null;
+
     async function createDocuments() {
       const companyName = document.getElementById("companyName").value;
       const jobDescription = document.getElementById("jobDescription").value;
@@ -141,6 +151,7 @@
     }
 
     async function convertToPDF(filetype) {
+
       const companyName = document.getElementById("companyName").value;
       const latexCV = document.getElementById("outputLatexCV").value;
       const latexCoverLetter = document.getElementById("outputLatexCoverLetter").value
@@ -151,7 +162,7 @@
       const formData = new FormData();
       formData.append("company_name", companyName);
       formData.append("filetype", filetype);
-      
+
       if (filetype === "cv"){
         formData.append("latex_content", latexCV);
       } else {
@@ -169,15 +180,36 @@
       }
 
       const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
+      const url = window.URL.createObjectURL(blob);
 
+      if (filetype === "cv"){
+        cvPdfUrl = url;
+        document.getElementById("pdfPreviewCV").src = url;
+      } else {
+        coverLetterPdfUrl = url;
+        document.getElementById("pdfPreviewCoverLetter").src = url;
+      }
+
+
+      /*
       const a = document.createElement("a");
       a.href = url;
       a.download = filetype === "cv" ? `Salaar_Mir_CV_${companyName}.pdf` : `Salaar_Mir_CoverLetter_${companyName}.pdf`;
       a.click();
       URL.revokeObjectURL(url);
       status.textContent = "PDF downloaded!";
+      */
     
+    }
+
+    function downloadPDF(filetype) {
+      const companyName = document.getElementById("companyName").value;
+      const url = filetype === "cv" ? cvPdfUrl : coverLetterPdfUrl;
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filetype === "cv" ? `Salaar_Mir_CV_${companyName}.pdf` : `Salaar_Mir_CoverLetter_${companyName}.pdf`;
+      a.click();
+      URL.revokeObjectURL(url);
     }
   </script>
 </body>
