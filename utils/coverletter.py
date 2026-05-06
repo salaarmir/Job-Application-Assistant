@@ -1,6 +1,6 @@
 from utils.helpers import clean_latex
 
-def tailor_coverletter(client: str, job_description: str, cover_letter_text: str) -> str:
+def tailor_coverletter(client: str, job_description: str, cover_letter_text: str, user_prompts: str) -> str:
 
     message = client.messages.create(
         model="claude-haiku-4-5",
@@ -22,6 +22,9 @@ Job Description:
 
 Current Cover Letter (LaTeX):
 {cover_letter_text}
+
+Additional Instructions:
+{user_prompts}
 
 Return ONLY raw LaTeX, no markdown, no backticks, no explanation."""
             }

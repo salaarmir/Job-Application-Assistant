@@ -25,7 +25,8 @@ def home():
 @app.post("/create_documents")
 def create_documents(
     company_name: str = Form(...),
-    job_description: str = Form(...)
+    job_description: str = Form(...),
+    user_prompts: str = Form("")
 
 ):
 
@@ -35,8 +36,8 @@ def create_documents(
     with open("documents/example_coverletter.tex", "r") as f:
         cover_letter_text = f.read()
 
-    tailored_cv = tailor_cv(client, job_description, cv_text)
-    tailored_cover_letter = tailor_coverletter(client, job_description, cover_letter_text)
+    tailored_cv = tailor_cv(client, job_description, cv_text, user_prompts)
+    tailored_cover_letter = tailor_coverletter(client, job_description, cover_letter_text, user_prompts)
 
     # Save CV to file instead of printing
     cv_file = f"tailored_documents/Salaar_Mir_CV_{company_name}.tex"

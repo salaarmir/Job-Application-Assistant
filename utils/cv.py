@@ -1,6 +1,6 @@
 from utils.helpers import clean_latex
 
-def tailor_cv(client: str, job_description: str, cv_text: str) -> str:
+def tailor_cv(client: str, job_description: str, cv_text: str, user_prompts: str) -> str:
 
     message = client.messages.create(
         model="claude-haiku-4-5",
@@ -29,6 +29,9 @@ Job Description:
 
 Current CV (LaTeX):
 {cv_text}
+
+Additional Instructions:
+{user_prompts}
 
 Return the full rewritten LaTeX CV. Only change wording, ordering, and emphasis - not facts."""
             }
