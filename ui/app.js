@@ -31,6 +31,70 @@
       status.textContent = "Documents generated successfully!";
     }
 
+    async function uploadDocuments() {
+      const fileInput = document.getElementById("academicFile");
+      const status = document.getElementById("status");
+
+      if (!fileInput.files.length) {
+        status.textContent = "Please select a file to upload.";
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("academic_file", fileInput.files[0]);
+
+      status.textContent = "Uploading and ingesting document...";
+
+      const response = await fetch("/upload_documents", {
+        method: "POST",
+        body: formData
+      });
+
+      if (!response.ok) {
+        status.textContent = "Something went wrong.";
+        return;
+      }
+
+      status.textContent = "Document uploaded and ingested successfully!";
+      fileInput.value = ""; // Clear the file input
+
+      await loadDocuments(); // Refresh the documents list
+    }
+
+    async function loadDocuments() {
+      const response = await fetch("/documents");
+      const data = await response.json();
+
+      const container = document.getElementById("documentsList");
+      container.innerHTML = ""; // Clear previous content
+
+      if (!data.filenames || data.filenames.length === 0) {
+        container.innerHTML = "<p>No documents uploaded yet.</p>";
+        return;
+      }
+
+      data.filenames.forEach(filename => {
+        const div = document.createElement("div");
+        div.style.border = "1px solid #000000";
+        div.style.padding = "12px";
+        div.style.marginBottom = "12px";
+        div.style.borderRadius = "8px";
+
+        div.textContent = filename;
+        const deleteButton = document.createElement("button");
+        deleteButton.textContent = "Delete";
+        deleteButton.style.marginLeft = "12px";
+        deleteButton.addEventListener("click", async () => {
+          await fetch(`/delete_document/${filename}`, { method: "DELETE" });
+          await loadDocuments(); // Refresh the list after deletion
+        });
+
+        div.appendChild(deleteButton);
+
+        container.appendChild(div);
+      });
+    }
+
     async function convertToPDF(filetype) {
 
       const companyName = document.getElementById("companyName").value;
@@ -77,6 +141,7 @@
 
     function downloadPDF(filetype) {
       const companyName = document.getElementById("companyName").value;
+      const status = document.getElementById("status");
       const url = filetype === "cv" ? cvPdfUrl : coverLetterPdfUrl;
       const a = document.createElement("a");
       a.href = url;
@@ -104,3 +169,10 @@
         document.getElementById("overlay").classList.toggle("open");
         document.getElementById("menuButton").classList.toggle("menuOpen");
     }   
+
+    document.addEventListener("DOMContentLoaded", () => {
+
+        if (document.getElementById("documentsList")) {
+          loadDocuments();
+        }
+      });

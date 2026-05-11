@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>CV Tailor</title>
+  <link rel="stylesheet" href="ui/styles.css"/>
+  <script src="ui/app.js"></script>
+</head>
+<body>
+
+    <button id="menuButton" onclick="toggleMenu()"></button>
+
+    <div id="sidebar">
+      <h2>Application Assistant</h2>
+      <button onclick="window.location.href='/'">Home</button>
+      <button onclick="window.location.href='/rag'">Upload Documents</button>
+    </div>
+
+    <div id="overlay" onclick="toggleMenu()"></div>
+    
+    <h1>Upload Documents</h1>
+
+    <h2>Document Upload and RAG System</h2>
+
+    <form id="uploadForm">
+      <input type="file" id="academicFile" name="academicFile" accept=".pdf"/>
+      <button type="button" onclick="uploadDocuments()">Upload Documents</button>
+    </form>
+
+    <p id="status"></p>
+
+    <hr/>
+
+    <h2>Currently Uploaded Documents</h2>
+    <div id="documentsList"></div>
+
+</body>
+</html>

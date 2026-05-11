@@ -1,6 +1,12 @@
 from utils.helpers import clean_latex
+from backend import query_documents
+import anthropic
+import os
 
 def tailor_coverletter(client: str, job_description: str, cover_letter_text: str, user_prompts: str) -> str:
+
+    relevant_docs = query_documents(query=job_description, top_k=5)
+    relevant_context = "\n\n".join(relevant_docs["documents"][0])
 
     message = client.messages.create(
         model="claude-haiku-4-5",
@@ -22,6 +28,12 @@ Job Description:
 
 Current Cover Letter (LaTeX):
 {cover_letter_text}
+
+Relevant Academic Background:
+{relevant_context}
+
+Use the above background information to strengthen the CV where genuinely relevant. 
+Do not fabricate anything — only use information explicitly present in the background.
 
 Additional Instructions:
 {user_prompts}

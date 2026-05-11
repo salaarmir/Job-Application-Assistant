@@ -4,11 +4,13 @@ from dotenv import load_dotenv
 from utils.cv import tailor_cv
 from utils.coverletter import tailor_coverletter
 from fastapi import FastAPI
-from fastapi import Form
+from fastapi import Form, UploadFile, File
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 import zipfile
 import subprocess
+
+from backend import ingest_document, get_documents, delete_file
 
 
 load_dotenv()
@@ -22,12 +24,15 @@ app.mount("/ui", StaticFiles(directory="ui"), name="ui")
 def home():
     return FileResponse("index.html")
 
+@app.get("/rag")
+def RAG():
+    return FileResponse("pages/rag.html")
+
 @app.post("/create_documents")
 def create_documents(
     company_name: str = Form(...),
     job_description: str = Form(...),
     user_prompts: str = Form("")
-
 ):
 
     with open("documents/example_cv.tex", "r") as f:
@@ -58,22 +63,6 @@ def create_documents(
         "latex_cover_letter": tailored_cover_letter
       }
 
-    '''
-    zip_filename = f"Salaar_Mir_{company_name}.zip"
-
-    with zipfile.ZipFile(zip_filename, 'w') as zipf:
-        zipf.write(cv_file)
-        zipf.write(cl_file)
-                
-    return FileResponse(
-
-        path=zip_filename,
-        media_type="application/zip",
-        filename=zip_filename
-    )
-
-    '''
-
 @app.post("/convert_to_pdf")
 async def convert_to_pdf(latex_content: str = Form(...), filetype: str = Form(...), company_name: str = Form(...)):
     with open ("output.tex", "w") as f:
@@ -88,3 +77,26 @@ async def convert_to_pdf(latex_content: str = Form(...), filetype: str = Form(..
         os.rename("output.pdf", f"Salaar_Mir_CoverLetter_{company_name}.pdf")
         return FileResponse(f"Salaar_Mir_CoverLetter_{company_name}.pdf", media_type="application/pdf", filename=f"Salaar_Mir_CoverLetter_{company_name}.pdf")
 
+@app.post("/upload_documents")
+async def upload_documents(academic_file: UploadFile = File(...)):
+
+    print(f"Received file: {academic_file.filename}")
+
+
+    file_path = f"uploaded_documents/{academic_file.filename}"
+
+    with open(file_path, "wb") as f:
+        f.write(await academic_file.read())
+
+    ingest_document(file_path=file_path, metadata={"filename": academic_file.filename})
+    return {"message": "File uploaded and ingested successfully!"}
+
+@app.get("/documents")
+async def documents():
+    return get_documents()
+
+@app.delete("/delete_document/{filename}")
+async def delete_document(filename: str):
+    
+    delete_file(filename=filename)
+    return {"message": f"Document with filename {filename} deleted successfully!"}

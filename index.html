@@ -12,10 +12,8 @@
 
     <div id="sidebar">
       <h2>Application Assistant</h2>
-      <button>Home</button>
-      <button>Tailor CV</button>
-      <button>Tailor Cover Letter</button>
-      <button>Upload Documents</button>
+      <button onclick="window.location.href= '/'">Home</button>
+      <button onclick="window.location.href='/rag'">Upload Documents</button>
     </div>
 
     <div id="overlay" onclick="toggleMenu()"></div>
@@ -38,7 +36,6 @@
       <textarea id="outputLatexCV" placeholder="Generated Latex CV will appear here..." width="500" height="800"></textarea>
       <iframe id="pdfPreviewCV" width="500" height="800">Preview of CV</iframe>
     </div>
-
 
     <button onclick="convertToPDF('cv')">Preview PDF</button>
     <button onclick="downloadPDF('cv')">Download PDF</button>
