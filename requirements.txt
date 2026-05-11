@@ -1,0 +1,14 @@
+anthropic
+fastapi
+uvicorn
+python-multipart
+chromadb
+sentence-transformers
+pypdf
+python-dotenv
+pydantic
+torch
+transformers
+numpy
+scikit-learn
+scipy
