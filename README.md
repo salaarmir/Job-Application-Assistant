@@ -45,9 +45,11 @@ job-application-assistant/
 
 ## Setup
 
-1. Install Python dependencies:
+1. Create a virtual environment and install Python dependencies:
 ```bash
-   pip install fastapi uvicorn anthropic python-multipart chromadb sentence-transformers pypdf
+   python3 -m venv venv
+   source venv/bin/activate
+   pip install -r requirements.txt
 ```
 
 2. Install pdflatex:
